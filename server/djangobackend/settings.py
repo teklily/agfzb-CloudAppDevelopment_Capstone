@@ -27,7 +27,7 @@ DEBUG = True
 
 APPEND_SLASH = True
 
-ALLOWED_HOSTS = ["localhost,teklily2.mybluemix.net"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
