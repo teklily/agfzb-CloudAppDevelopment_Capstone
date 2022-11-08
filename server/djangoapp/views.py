@@ -7,9 +7,12 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
+from django.db import models
+from django.core import serializers
+from django.utils.timezone import now
 import logging
 import json
-
+from djangoapp.restapis import *
 # Get an instance of a logger teklily
 logger = logging.getLogger(__name__)
 
@@ -18,19 +21,14 @@ logger = logging.getLogger(__name__)
 
 
 # Create an `about` view to render a static about page
-# def about(request):
-# ...
 def about(request):
     return render(request, "djangoapp/about.html")
 
 # Create a `contact` view to return a static contact page
-#def contact(request):
 def contact(request):
     return render(request, "djangoapp/contact.html")
 
 # Create a `login_request` view to handle sign in request
-# def login_request(request):
-# ...
 def login_request(request):
     context = {}
     # Handles POST request
@@ -49,9 +47,8 @@ def login_request(request):
             return render(request, 'djangoapp/index.html', context)
     else:
         return render(request, 'djangoapp/index.html', context)
+
 # Create a `logout_request` view to handle sign out request
-# def logout_request(request):
-# ...
 def logout_request(request):
     # Get the user object based on session id in request
     print("Log out the user `{}`".format(request.user.username))
@@ -61,8 +58,6 @@ def logout_request(request):
     return redirect('djangoapp:index')
 
 # Create a `registration_request` view to handle sign up request
-# def registration_request(request):
-# ...
 def registration_request(request):
     context = {}
     # If it is a GET request, just render the registration page
@@ -97,9 +92,15 @@ def registration_request(request):
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     context = {}
+    #url = ""
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
-
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/dadebe15-6210-4641-a93b-ff47963cd160/dealership-package/get-dealership"
+        # Get dealers from the URL
+        dealerships = get_dealers_from_cf(url)
+        # Concat all dealer's short name
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        # Return a list of dealer short name
+        return HttpResponse(dealer_names)
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
