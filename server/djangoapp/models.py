@@ -1,8 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
-from django.core import serializers 
-import uuid
-import json
+
 
 # Create your models here.
 
@@ -25,7 +23,6 @@ class CarMake(models.Model):
 # - Year (DateField)
 # - Any other fields you would like to include in car model
 # - __str__ method to print a car make object
-
 class CarModel(models.Model):
     id = models.IntegerField(default=1,primary_key=True)
     name = models.CharField(null=False, max_length=100, default='Car')
@@ -80,17 +77,3 @@ class CarDealer:
         return "Dealer name: " + self.full_name
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data
-class DealerReview:
-    def __init__(self, dealership, name, purchase, review, purchase_date, car_make, car_model, sentiment, id):
-        self.dealership = dealership
-        self.name = name
-        self.purchase = purchase
-        self.review = review
-        self.purchase_date = purchase_date
-        self.car_make = car_make
-        self.car_model = car_model
-        self.car_year = car_year
-        self.sentiment = sentiment
-        self.id = id
-    def __str__(self):
-        return "Name: " + self.name
