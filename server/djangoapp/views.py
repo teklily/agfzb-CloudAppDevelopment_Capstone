@@ -13,6 +13,7 @@ from django.utils.timezone import now
 import logging
 import json
 from djangoapp.restapis import *
+from djangoapp.models import *
 # Get an instance of a logger teklily
 logger = logging.getLogger(__name__)
 
@@ -108,9 +109,9 @@ def get_dealerships(request):
 # ...
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
-        #context = {}
+        context = {}
         dealer_url = "https://us-south.functions.appdomain.cloud/api/v1/web/dadebe15-6210-4641-a93b-ff47963cd160/dealership-package/get-dealership"
-        dealer = get_dealer_by_id_from_cf(dealer_url, id=id)
+        dealer = get_dealer_by_id_from_cf(dealer_url, id=dealer_id)
         context["dealer"] = dealer
     
         review_url = "https://us-south.functions.appdomain.cloud/api/v1/web/dadebe15-6210-4641-a93b-ff47963cd160/dealership-package/get-review"
@@ -123,8 +124,20 @@ def get_dealer_details(request, dealer_id):
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
 # ...
+
+"""
+def add_review(request, dealer_id):
+    context = {}
+    if request.method == "GET":
+        review["time"] = datetime.utcnow().isoformat()
+        review["dealership"] = 11
+        review["review"] = "Test review"
+        return render(request, 'djangoapp/index.html', context)
+"""
+
+
 def add_review(request, id):
-    #context = {}
+    context = {}
     dealer_url = "https://us-south.functions.appdomain.cloud/api/v1/web/dadebe15-6210-4641-a93b-ff47963cd160/dealership-package/get-dealership"
     dealer = get_dealer_by_id_from_cf(dealer_url, id=id)
     context["dealer"] = dealer
@@ -156,9 +169,9 @@ def add_review(request, id):
             payload["car_model"] = car.name
             payload["car_year"] = int(car.year.strftime("%Y"))
 
-            new_payload = {}
-            new_payload["review"] = payload
+            json_payload = {}
+            json_payload["review"] = payload
             review_post_url = "https://us-south.functions.appdomain.cloud/api/v1/web/dadebe15-6210-4641-a93b-ff47963cd160/dealership-package/post-review"
-            post_request(review_post_url, new_payload, id=id)
+            post_request(review_post_url, json_payload, id=id)
         return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
 
