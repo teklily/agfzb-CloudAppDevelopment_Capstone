@@ -16,7 +16,7 @@ from djangoapp.restapis import *
 from djangoapp.models import *
 # Get an instance of a logger teklily
 logger = logging.getLogger(__name__)
-
+from .restapis import get_dealer_reviews_from_cf, get_dealer_by_id_from_cf
 
 # Create your views here.
 
@@ -93,7 +93,6 @@ def registration_request(request):
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     context = {}
-    #url = ""
     if request.method == "GET":
         url = "https://us-south.functions.appdomain.cloud/api/v1/web/dadebe15-6210-4641-a93b-ff47963cd160/dealership-package/get-dealership"
         # Get dealers from the URL
@@ -115,11 +114,11 @@ def get_dealer_details(request, dealer_id):
         context["dealer"] = dealer
     
         review_url = "https://us-south.functions.appdomain.cloud/api/v1/web/dadebe15-6210-4641-a93b-ff47963cd160/dealership-package/get-review"
-        reviews = get_dealer_reviews_from_cf(review_url, id=id)
+        reviews = get_dealer_reviews_from_cf(review_url, id=dealer_id)
         print(reviews)
         context["reviews"] = reviews
 
-        review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+        #review_obj.sentiment = analyze_review_sentiments(review_obj.review)
         return render(request, 'djangoapp/dealer_details.html', context)
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
@@ -173,5 +172,5 @@ def add_review(request, id):
             json_payload["review"] = payload
             review_post_url = "https://us-south.functions.appdomain.cloud/api/v1/web/dadebe15-6210-4641-a93b-ff47963cd160/dealership-package/post-review"
             post_request(review_post_url, json_payload, id=id)
-        return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
+        return redirect("djangoapp:dealer_details", dealer_id=id)
 
